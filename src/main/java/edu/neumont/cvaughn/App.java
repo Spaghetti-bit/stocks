@@ -32,15 +32,14 @@ public final class App {
         /*
         * Statement Date is the date the application was run.
         */
-        Date statementDate = new Date();
         
         //Read Data
         /*
          * JSON Parser and Reader
          */
         JSONParser jParser = new JSONParser();
+        ArrayList<Person> people = new ArrayList<Person>();
         try {
-            ArrayList<Person> people = new ArrayList<Person>();
             //JSON Array
             File jsonFile = new File("C:\\Users\\LaptopNeumont-Sage\\CSC180 Workspace DIR\\Stomks\\stocks\\stock_transations-3.by.account.holder.json");
             // Scanner definition and modifiers
@@ -84,7 +83,7 @@ public final class App {
                 
                 // key : value
                 Person person = new Person();
-                Stock stock = new Stock();
+
                 Field[] personFields = Person.class.getFields();
                 Field[] stockFields = Stock.class.getFields();
 
@@ -94,13 +93,13 @@ public final class App {
                     String stringKey = (String) keyStr;
                     if (stringKey.equals("stock_trades"))
                     {
-                        // TODO: Implement Stock Trades
                         // Stock Trades.... Yay!
                         if (keyVal instanceof JSONArray)
                         {
                             JSONArray stockArray = (JSONArray) keyVal;
                             for (int stockIndex = 0; stockIndex < stockArray.size(); stockIndex++)
                             {
+                                Stock stock = new Stock();
                                 JSONObject keyValObj = (JSONObject) stockArray.get(stockIndex);
                                 keyValObj.keySet().forEach(keyValStr ->
                                 {
@@ -121,14 +120,21 @@ public final class App {
                                     }
                                     
                                 });
+                                /*
+                                 * Stock has been hydrated, add it to our person's stock_trades list.
+                                 */
+                                person.stock_trades.add(stock);
                             }
-                            person.stock_trades.add(stock);
                         }
                     }
+                    // Iterate through the fields of the Person class and hydrate it with proper data
                     for (int i = 0; i < personFields.length; i++)
                     {
-
-                        if (personFields[i].getName().equals(keyStr))
+                        /*
+                         * Since we deal with stock trades differently, we have to check if the field "stock_trades" is found to make sure we don't
+                         * overwrite our data already in the stock_trades field of our person object.
+                         */
+                        if (personFields[i].getName().equals(keyStr) && !personFields[i].getName().equals("stock_trades"))
                         {
                             try {
                                 personFields[i].set(person, keyVal);
@@ -141,27 +147,16 @@ public final class App {
                         }
                     }
                 });
-                
-
-
-
-                //Increment Index
-                index++;
+                /* @ tihs point the object is complete.
+                 * Person has been hydrated with their respective stocks.
+                 */
                 people.add(person);
             }
-            
-            // Person / Stock Creation
-            /*
-             * <--Person--> has a(n); 
-             * account number (int)
-             * name (String)
-             * social security number [ssn] (String)
-             * email (String)
-             * Phone Number (String)
-             */
-            System.out.println(":)");
         } catch (Exception e) {
             e.printStackTrace();
+        }
+        for (Person per : people) {
+            per.GenerateStatement();
         }
         // Output HTML
     }

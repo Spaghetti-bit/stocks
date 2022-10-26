@@ -2,10 +2,10 @@ package edu.neumont.cvaughn;
 
 public class Stock {
     // Variables
-    public String type;
     public String stock_symbol;
     public Long count_shares;
     public String price_per_share;
+    public String type;
     //Getter / Setter
     /*
      * Price Per Share, returns a String
@@ -25,18 +25,24 @@ public class Stock {
     public String type() { return type; }
     public void setType(String type) { this.type = type; }
 
-    public int calculateTotalValue()
+    public double netWorth()
     {
-        int total = (int) (count_shares * CashHandler.cashToInt(price_per_share));
+        double total = (double) (count_shares * CashHandler.cashToInt(price_per_share));
         switch (type)
         {
             case "Buy":
             return -total;
 
             case "Sell":
+            count_shares = (long) 0;
             return total;
         }
         return 0;
+    }
+
+    public double grossWorth()
+    {
+        return (double) (count_shares * CashHandler.cashToInt(price_per_share));
     }
 
 

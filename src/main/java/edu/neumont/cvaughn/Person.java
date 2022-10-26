@@ -1,6 +1,7 @@
 package edu.neumont.cvaughn;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class Person {
 
@@ -34,6 +35,9 @@ public class Person {
      */
     public ArrayList<Stock> stock_trades = new ArrayList<Stock>();
 
+    private double cashValue = CashHandler.cashToInt(beginning_balance);
+    private double stockValue;
+
     //Getters
     public Long getAccountNumber() { return account_number; }
     public String getSSN() { return ssn; }
@@ -51,5 +55,27 @@ public class Person {
 
     // :(
     
+    public double cashWorth()
+    {
+        for (Stock stk : stock_trades) {
+            cashValue += stk.netWorth();
+        }
+        return CashHandler.cashToInt(beginning_balance) + cashValue;
+    }
+
+    public double stockValue()
+    {
+        for (Stock stk : stock_trades) {
+            stockValue += stk.grossWorth();
+        }
+        return stockValue;
+    }
+
+    public void GenerateStatement()
+    {
+        Date statementDate = new Date();
+        String output = "AccNum: " + account_number + "\nCash Worth: " + cashWorth() + "\nStock Value: " +stockValue() + "\nSatement Date: " + statementDate.toString();
+        System.out.println(output);
+    }
 
 }

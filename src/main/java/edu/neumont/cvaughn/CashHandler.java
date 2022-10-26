@@ -1,8 +1,11 @@
 package edu.neumont.cvaughn;
 
 final class CashHandler {
-    public static int cashToInt(String cash)
+    public static double cashToInt(String cash)
     {
-        return Integer.parseInt(cash.split("$")[1]);
+        if (cash == null) return 0;
+        
+        String splitStr = cash.replace("$", "");
+        return Double.parseDouble(splitStr);
     }
 }
